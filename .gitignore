@@ -1,0 +1,78 @@
+# IDEs
+.vs/
+.vscode/
+.idea/
+
+# .NET build
+/bin/
+*/bin/
+/obj/
+*/obj/
+*.user
+*.suo
+*.userprefs
+*.sln.docstates
+artifacts/
+Publish/
+
+# ASP.NET / Configuration / secrets
+appsettings.Development.json
+secrets.json
+
+# NuGet
+*.nupkg
+packages/
+
+# Test / coverage
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+*.trx
+
+# Node / Next.js
+node_modules/
+frontend/node_modules/
+.next/
+.next/cache/
+out/
+dist/
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+.npmrc
+
+# Next/Vercel / build caches
+.vercel/
+.now/
+.cache/
+.eslintcache
+
+# Lockfiles (keep if you want deterministic installs)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Logs / OS
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
+
+# Database / misc
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+*.tmp
+*.temp
