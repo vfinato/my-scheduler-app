@@ -1,5 +1,4 @@
 using Auth.Domain.ValueObjects;
-using Xunit;
 
 namespace Auth.Tests.ValueObjects
 {

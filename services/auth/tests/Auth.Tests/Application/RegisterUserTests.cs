@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Auth.Application.Interfaces;
 using Auth.Application.RegisterUser;
 using Auth.Domain.Entities;
 using Auth.Domain.Interfaces;
 using Auth.Domain.ValueObjects;
+
 using Moq;
-using Xunit;
 
 namespace Auth.Tests.Application
 {

@@ -17,3 +17,4 @@ E:\Repositório códigos\my-scheduler-app\services\auth\src\Auth.Infrastructure\
 E:\Repositório códigos\my-scheduler-app\services\auth\src\Auth.Infrastructure\obj\Debug\net9.0\ref\Auth.Infrastructure.dll
 E:\Repositório códigos\my-scheduler-app\services\auth\src\Auth.Infrastructure\bin\Debug\net9.0\Auth.Application.dll
 E:\Repositório códigos\my-scheduler-app\services\auth\src\Auth.Infrastructure\bin\Debug\net9.0\Auth.Application.pdb
+e:\Repositório códigos\my-scheduler-app\services\auth\src\Auth.Infrastructure\obj\Debug\net9.0\Auth.Infrastructure.sourcelink.json

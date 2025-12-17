@@ -207,3 +207,4 @@ E:\Repositório códigos\my-scheduler-app\services\auth\tests\Auth.Tests\bin\Deb
 E:\Repositório códigos\my-scheduler-app\services\auth\tests\Auth.Tests\bin\Debug\net9.0\Auth.Infrastructure.dll
 E:\Repositório códigos\my-scheduler-app\services\auth\tests\Auth.Tests\bin\Debug\net9.0\Auth.Application.pdb
 E:\Repositório códigos\my-scheduler-app\services\auth\tests\Auth.Tests\bin\Debug\net9.0\Auth.Infrastructure.pdb
+e:\Repositório códigos\my-scheduler-app\services\auth\tests\Auth.Tests\obj\Debug\net9.0\Auth.Tests.sourcelink.json
