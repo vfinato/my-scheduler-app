@@ -4,6 +4,8 @@
 .idea/
 
 # .NET build
+bin/
+obj/
 [Bb]in/
 */bin/
 [Oo]bj/
