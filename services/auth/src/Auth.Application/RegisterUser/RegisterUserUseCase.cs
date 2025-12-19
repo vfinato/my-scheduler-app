@@ -33,7 +33,9 @@ namespace Auth.Application.RegisterUser
             if(await _userRepository.ExistsByEmailAsync(email, ct))
                 return RegisterUserResult.Fail("Email already in use.");
             
-            var password = _passwordHasher.Hash(command.Password);
+            var hash = _passwordHasher.Hash(command.Password);
+
+            var password = Password.FromHash(hash);
 
             var user = User.Create(email, password);
 

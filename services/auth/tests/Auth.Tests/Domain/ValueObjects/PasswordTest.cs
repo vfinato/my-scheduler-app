@@ -11,27 +11,33 @@ namespace Auth.Tests.ValueObjects
             var input = "Testepwd@123";
 
             // Act
-            var password = Password.Create(input);
+            var password = Password.FromHash(input);
 
             // Assert
-            Assert.Equal(input, password.Value);
+            Assert.Equal(input, password.Hash);
+        }
+
+        [Fact]
+        public void Passwords_With_Same_Hash_Should_Be_Equal()
+        {
+            var hash = "hash123";
+
+            var p1 = Password.FromHash(hash);
+            var p2 = Password.FromHash(hash);
+
+            Assert.Equal(p1, p2);
+            Assert.True(p1.Equals(p2));
+            Assert.Equal(p1.GetHashCode(), p2.GetHashCode());
         }
 
         [Theory]
         [InlineData("")]
         [InlineData("     ")]
         [InlineData(null)]
-        [InlineData("short")]
-        [InlineData("nouppercase1@")]
-        [InlineData("NOLOWERCASE1@")]
-        [InlineData("NoNumber@")]
-        [InlineData("NoSpecialChar1")]
-        [InlineData("123456789")]
-        [InlineData("abcdefgh")]
         public void Should_Not_Create_Invalid(string? invalid)
         {
             // Act & Assert
-            Assert.Throws<ArgumentException>(() => Password.Create(invalid));
+            Assert.Throws<ArgumentException>(() => Password.FromHash(invalid));
         }
     }
 }

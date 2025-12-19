@@ -13,10 +13,10 @@ namespace Auth.Domain.ValueObjects
 
         public static Email From(string email) => Create(email);
 
-        public static Email Create(string? email)
+        public static Email Create(string email)
         {
-            if (string.IsNullOrWhiteSpace(email))
-                throw new ArgumentException("Email cannot be null or empty.", nameof(email));
+            if(string.IsNullOrEmpty(email))
+                throw new ArgumentException("Email cannot be empty.", nameof(email));
 
             email = email.Trim().ToLowerInvariant();
 

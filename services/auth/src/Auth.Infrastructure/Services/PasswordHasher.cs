@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using Auth.Application.Interfaces;
+using Auth.Domain.ValueObjects;
 
 namespace Auth.Infrastructure.Services
 {
@@ -7,8 +8,7 @@ namespace Auth.Infrastructure.Services
     {
         public string Hash(string password)
         {
-            if(string.IsNullOrWhiteSpace(password))
-                throw new ArgumentException("Password cannot be null or empty.", nameof(password));
+            ArgumentNullException.ThrowIfNull(password);
 
             using var rng = RandomNumberGenerator.Create();
             var salt = new byte[16];

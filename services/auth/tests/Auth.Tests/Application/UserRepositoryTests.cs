@@ -15,7 +15,8 @@ namespace Auth.Tests.Application
             var repo = new Mock<IUserRepository>();
 
             var email = Email.From("test@example.com");
-            var user = User.Create(email, "HASHED_PASSWORD_123");
+            var password = Password.FromHash("HASHED_PASSWORD_123");
+            var user = User.Create(email, password);
             //act
             await repo.Object.AddAsync(user);
 

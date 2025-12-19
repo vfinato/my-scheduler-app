@@ -6,51 +6,45 @@ namespace Auth.Domain.Entities
     {
         public Guid Id { get; private set; }
         public Email Email { get; private set; } = null!;
-        public string PasswordHash { get; private set; } = null!;
+        public Password Password { get; private set; } = null!;
         public DateTime CreatedAt { get; private set; }
         public bool IsActive { get; private set; }
 
         private User(){}
 
-        private User(Guid id, Email email, string passwordHash, DateTime createdAt, bool isActive)
+        private User(Guid id, Email email, Password password, DateTime createdAt, bool isActive)
         {
             Id = id;
             Email = email;
-            PasswordHash = passwordHash;
+            Password = password;
             CreatedAt = createdAt;
             IsActive = isActive;
         }
 
         
 
-        public static User Create(Email email, string passwordHash)
+        public static User Create(Email email, Password password)
         {
-            if(email == null)
-            {
-                throw new ArgumentNullException(nameof(email), "Email cannot be null.");
-            }
             
-            if(string.IsNullOrWhiteSpace(passwordHash))
-            {
-                throw new ArgumentException("Password hash cannot be empty.", nameof(passwordHash));
-            }
+            if(email == null)
+                throw new ArgumentException("Password cannot be empty.", nameof(email));
+
+            if(password == null)
+                throw new ArgumentException("Password cannot be empty.", nameof(password));
 
             return new User(
                 id: Guid.NewGuid(),
                 email: email,
-                passwordHash: passwordHash,
+                password: password,
                 createdAt: DateTime.UtcNow,
                 isActive: true
             );
         }
 
-        public void ChangePassword(string newPasswordHash)
+        public void ChangePassword(Password newPassword)
         {
-            if(string.IsNullOrWhiteSpace(newPasswordHash))
-            {
-                throw new ArgumentException("New password hash cannot be empty.", nameof(newPasswordHash));
-            }
-            PasswordHash = newPasswordHash;
+            ArgumentNullException.ThrowIfNull(newPassword);
+            Password = newPassword;
         }
 
         public void Deactivate()
