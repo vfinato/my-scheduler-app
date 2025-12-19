@@ -4,9 +4,9 @@
 .idea/
 
 # .NET build
-/bin/
+[Bb]in/
 */bin/
-/obj/
+[Oo]bj/
 */obj/
 *.user
 *.suo
