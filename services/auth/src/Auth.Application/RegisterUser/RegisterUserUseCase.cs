@@ -5,17 +5,8 @@ using Auth.Domain.ValueObjects;
 
 namespace Auth.Application.RegisterUser
 {
-    public sealed class RegisterUserUseCase
+    public sealed class RegisterUserUseCase(IUserRepository userRepository, IPasswordHasher passwordHasher)
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IPasswordHasher _passwordHasher;
-
-        public RegisterUserUseCase(IUserRepository userRepository, IPasswordHasher passwordHasher)
-        {
-            _userRepository = userRepository;
-            _passwordHasher = passwordHasher;
-        }
-
         public async Task<RegisterUserResult> ExecuteAsync(RegisterUserCommand command, CancellationToken ct = default)
         {
             Email email;
@@ -30,16 +21,16 @@ namespace Auth.Application.RegisterUser
                 return RegisterUserResult.Fail($"Invalid email: {ex.Message}");
             }
 
-            if(await _userRepository.ExistsByEmailAsync(email, ct))
+            if(await userRepository.ExistsByEmailAsync(email, ct))
                 return RegisterUserResult.Fail("Email already in use.");
             
-            var hash = _passwordHasher.Hash(command.Password);
+            var hash = passwordHasher.Hash(command.Password);
 
             var password = Password.FromHash(hash);
 
             var user = User.Create(email, password);
 
-            await _userRepository.AddAsync(user, ct);
+            await userRepository.AddAsync(user, ct);
 
             return RegisterUserResult.Ok(user.Id);
         }

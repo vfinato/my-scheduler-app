@@ -6,19 +6,22 @@ using Auth.Infrastructure.Persistence;
 using Auth.Infrastructure.Persistence.Repositories;
 
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace Auth.IntegrationTests;
 
-public sealed class UserRepositoryTests
+public sealed class UserRepositoryTests (DbFixture fixture) : IClassFixture<DbFixture>
 {
-    private const string ConnectionString =
-        "Host=localhost;Port=5432;Database=my_database;Username=admin;Password=admin";
-
-    private static DbContextOptions<AuthDbContext> CreateOptions(string dbName)
+    private DbContextOptions<AuthDbContext> CreateOptions(string dbName)
     {
-        var cs = $"Host=localhost;Port=5432;Database={dbName};Username=admin;Password=admin";
+        // Usamos a ConnectionString da fixture e apenas trocamos o Database
+        var builder = new NpgsqlConnectionStringBuilder(fixture.BaseConnectionString)
+        {
+            Database = dbName
+        };
+
         return new DbContextOptionsBuilder<AuthDbContext>()
-            .UseNpgsql(ConnectionString)
+            .UseNpgsql(builder.ConnectionString)
             .Options;
     }
 
@@ -34,31 +37,38 @@ public sealed class UserRepositoryTests
             await setupContext.Database.EnsureDeletedAsync();
             await setupContext.Database.EnsureCreatedAsync();
         }
-
-        var email = Email.Create("john@doe.com");
-        var password = Password.FromHash("hashed-password");
-
-        var user = User.Create(email, password);
-
-        // Act
-        await using (var context = new AuthDbContext(options))
+        try
         {
-            var repository = new UserRepository(context);
+            var email = Email.Create("john@doe.com");
+            var password = Password.FromHash("hashed-password");
 
-            await repository.AddAsync(user);
-            await context.SaveChangesAsync();
+            var user = User.Create(email, password);
+
+            // Act
+            await using (var context = new AuthDbContext(options))
+            {
+                var repository = new UserRepository(context);
+
+                await repository.AddAsync(user);
+                await context.SaveChangesAsync();
+            }
+
+            // Assert
+            await using (var assertContext = new AuthDbContext(options))
+            {
+                var repository = new UserRepository(assertContext);
+
+                var savedUser = await repository.GetByEmailAsync(email);
+
+                Assert.NotNull(savedUser);
+                Assert.Equal(email, savedUser!.Email);
+                Assert.Equal(password, savedUser.Password);
+            }
         }
-
-        // Assert
-        await using (var assertContext = new AuthDbContext(options))
+        finally
         {
-            var repository = new UserRepository(assertContext);
-
-            var savedUser = await repository.GetByEmailAsync(email);
-
-            Assert.NotNull(savedUser);
-            Assert.Equal(email, savedUser!.Email);
-            Assert.Equal(password, savedUser.Password);
+            await using var cleanupContext = new AuthDbContext(options);
+            await cleanupContext.Database.EnsureDeletedAsync();
         }
         
     }
@@ -74,29 +84,36 @@ public sealed class UserRepositoryTests
             await setupContext.Database.EnsureDeletedAsync();
             await setupContext.Database.EnsureCreatedAsync();
         }
-
-        var email = Email.Create("john@doe.com");
-        var password = Password.FromHash("hashed-password");
-
-        var user = User.Create(email, password);
-
-        await using (var context = new AuthDbContext(options))
+        try
         {
-            var repository = new UserRepository(context);
+            var email = Email.Create("john@doe.com");
+            var password = Password.FromHash("hashed-password");
 
-            await repository.AddAsync(user);
-            await context.SaveChangesAsync();
+            var user = User.Create(email, password);
+
+            await using (var context = new AuthDbContext(options))
+            {
+                var repository = new UserRepository(context);
+
+                await repository.AddAsync(user);
+                await context.SaveChangesAsync();
+            }
+
+            await using (var assertContext = new AuthDbContext(options))
+            {
+                var repository = new UserRepository(assertContext);
+
+                var savedUser = await repository.GetByIdAsync(user.Id);
+
+                Assert.NotNull(savedUser);
+                Assert.Equal(email, savedUser!.Email);
+                Assert.Equal(password, savedUser.Password);
+            }
         }
-
-        await using (var assertContext = new AuthDbContext(options))
+        finally
         {
-            var repository = new UserRepository(assertContext);
-
-            var savedUser = await repository.GetByIdAsync(user.Id);
-
-            Assert.NotNull(savedUser);
-            Assert.Equal(email, savedUser!.Email);
-            Assert.Equal(password, savedUser.Password);
+            await using var cleanupContext = new AuthDbContext(options);
+            await cleanupContext.Database.EnsureDeletedAsync();
         }
     }
 
@@ -112,26 +129,34 @@ public sealed class UserRepositoryTests
             await setupContext.Database.EnsureCreatedAsync();
         }
 
-        var email = Email.Create("john@doe.com");
-        var password = Password.FromHash("hashed-password");
-
-        var user = User.Create(email, password);
-
-        await using (var context = new AuthDbContext(options))
+        try
         {
-            var repository = new UserRepository(context);
+            var email = Email.Create("john@doe.com");
+            var password = Password.FromHash("hashed-password");
 
-            await repository.AddAsync(user);
-            await context.SaveChangesAsync();
+            var user = User.Create(email, password);
+
+            await using (var context = new AuthDbContext(options))
+            {
+                var repository = new UserRepository(context);
+
+                await repository.AddAsync(user);
+                await context.SaveChangesAsync();
+            }
+
+            await using (var assertContext = new AuthDbContext(options))
+            {
+                var repository = new UserRepository(assertContext);
+
+                var savedUser = await repository.ExistsByEmailAsync(email);
+
+                Assert.True(savedUser);
+            }
         }
-
-        await using (var assertContext = new AuthDbContext(options))
+        finally
         {
-            var repository = new UserRepository(assertContext);
-
-            var savedUser = await repository.ExistsByEmailAsync(email);
-
-            Assert.True(savedUser);
+            await using var cleanupContext = new AuthDbContext(options);
+            await cleanupContext.Database.EnsureDeletedAsync();
         }
     }
 }
